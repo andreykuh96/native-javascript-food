@@ -41,11 +41,21 @@ window.addEventListener('DOMContentLoaded', () => {
     //Timer
 
     function getTimeRemaining(endTime) {
-        const timeDifference = Date.parse(endTime) - Date.parse(new Date()),
-              days = Math.floor(timeDifference / (1000 * 60 * 60 * 24)),
-              hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24),
-              minutes = Math.floor((timeDifference / (1000 * 60)) % 60),
-              seconds = Math.floor((timeDifference / 1000) % 60);
+        let days, hours, minutes, seconds;
+
+        const timeDifference = Date.parse(endTime) - Date.parse(new Date());
+
+        if (timeDifference <= 0) {
+            days = 0;
+            hours = 0;
+            minutes = 0;
+            seconds = 0;
+        } else {
+            days = Math.floor(timeDifference / (1000 * 60 * 60 * 24)),
+            hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24),
+            minutes = Math.floor((timeDifference / (1000 * 60)) % 60),
+            seconds = Math.floor((timeDifference / 1000) % 60);
+        }
 
         return {
             'total': timeDifference,
@@ -67,7 +77,7 @@ window.addEventListener('DOMContentLoaded', () => {
         updateClock();
 
         function getZero(num) {
-            if (num > 0 && num < 10) {
+            if (num >= 0 && num < 10) {
                 return `0${num}`
             } else {
                 return num;
