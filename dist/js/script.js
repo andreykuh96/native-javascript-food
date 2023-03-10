@@ -184,7 +184,7 @@ window.addEventListener('DOMContentLoaded', () => {
         'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
         9,
         '.menu .container',
-        // 'menu__item'
+        // 'menu__item''
     ).render();
 
     new MenuCard(
@@ -206,4 +206,44 @@ window.addEventListener('DOMContentLoaded', () => {
         '.menu .container',
         'menu__item'
     ).render();
+
+    //Form
+
+    const forms = document.querySelectorAll('.form');
+    const message = {
+        loading: 'Загрузка',
+        failure: 'Ошибка',
+        success: 'Успешно'
+    }
+
+    forms.forEach(form => {
+        postData(form);
+    })
+
+    function postData(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const statusMessage = document.createElement('div');
+            statusMessage.textContent = message.loading;
+            form.append(statusMessage);
+
+            const request = new XMLHttpRequest();
+            request.open('POST', './server.php');
+            
+            request.setRequestHeader('Content-type', 'multipart/form-data');
+            const formData = new FormData(form);
+
+            request.send(formData);
+
+            request.addEventListener('load', () => {
+                if (request.status === 200) {
+                    console.log(request.response);
+                    statusMessage.textContent = message.success;
+                } else {
+                    statusMessage.textContent = message.failure;
+                }
+            })
+        })
+    }
 });

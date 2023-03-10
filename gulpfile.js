@@ -19,6 +19,7 @@ const browserSync = require('browser-sync').create();
 
 const path = {
     build: {
+        php: 'dist/',
         html: 'dist/',
         css: 'dist/css/',
         js: 'dist/js/',
@@ -27,6 +28,7 @@ const path = {
         fonts: 'dist/fonts/'
     },
     src: {
+        php: 'src/*.php',
         html: 'src/**/*.html',
         css: 'src/scss/**/*.scss',
         js: 'src/js/**/*.js',
@@ -35,6 +37,7 @@ const path = {
         fonts: 'src/fonts/**/*.{eot, ttf, woff, woff2, svg}'
     },
     watch: {
+        php: 'src/*.php',
         html: 'src/**/*.html',
         css: 'src/scss/**/*.scss',
         js: 'src/js/**/*.js',
@@ -62,6 +65,13 @@ function html() {
             removeComments: true
           }))
         .pipe(dest(path.build.html))
+        .pipe(browserSync.reload({stream: true}));
+}
+
+function php() {
+    return src(path.src.php, {base: 'src/'})
+        .pipe(plumber())
+        .pipe(dest(path.build.php))
         .pipe(browserSync.reload({stream: true}));
 }
 
@@ -141,6 +151,7 @@ function clean() {
 
 function watchFiles() {
     gulp.watch([path.watch.html], html)
+    gulp.watch([path.watch.php], php)
     gulp.watch([path.watch.css], css)
     gulp.watch([path.watch.js], js)
     gulp.watch([path.watch.images], images)
@@ -148,10 +159,11 @@ function watchFiles() {
     gulp.watch([path.watch.fonts], fonts)
 }
 
-const build = gulp.series(clean, gulp.parallel(html, css, js, images, icons, fonts))
+const build = gulp.series(clean, gulp.parallel(html, php, css, js, images, icons, fonts))
 const watch = gulp.parallel(build, watchFiles, server)
 
 exports.html = html
+exports.php = php
 exports.css = css
 exports.js = js
 exports.images = images
